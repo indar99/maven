@@ -1,0 +1,26 @@
+---
+
+- hosts: all
+
+  tasks:
+  - name: install jdk package
+    yum:
+      name: "java-1.8*"
+      state: present
+
+  - name: download tomcat file
+    get_url:
+      url: https://mirrors.estointernet.in/apache/tomcat/tomcat-9/v9.0.43/bin/apache-tomcat-9.0.43.tar.gz
+      dest: /opt/
+  - name: extract tomcat file
+    shell: cd /opt; tar -xvzf /opt/apache-tomcat-9.0.43.tar.gz
+
+  - name: give execute permission to tomcat file 
+    shell: chmod +x /opt/apache-tomcat-9.0.43/bin/startup.sh ; chmod +x /opt/apache-tomcat-9.0.43/bin/shutdown.sh
+
+  - name: create link files for tomcat startup.sh and shutdown.sh
+    shell: ln -s /opt/apache-tomcat-9.0.43/bin/startup.sh /usr/bin/tomcatup;ln -s /opt/apache-tomcat-9.0.43/bin/shutdown.sh /usr/bin/tomcatdown
+    ignore_errors: yes
+
+  - name: start tompcat server
+    shell: tomcatup
